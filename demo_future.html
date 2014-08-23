@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Future demo</title>
+    <script src="future.js"></script>
+</head>
+<body>
+<h3>Future demo</h3>
+<p>
+    <input type="button" id="test1" value="TEST 1: Success"/>
+    <input type="button" id="test2" value="TEST 2: Error"/>
+    <input type="button" id="test3" value="TEST 3: Cancel"/>
+    <input type="button" id="test4" value="TEST 4: All events"/>
+    <input type="button" id="test5" value="TEST 5: Multiple listeners"/>
+</p>
+<p>
+    Open the dev tools to see the console debug output.
+</p>
+<script>
+    var asynchronousProcessSuccess, asynchronousProcessError, asynchronousProcessCancel;
+
+// TEST 1
+    document.getElementById("test1").addEventListener("click", function() {
+        var future = asynchronousProcessSuccess(); // The asynchronous process will return a Future object
+        future.addSuccessListener(function(future) {
+            alert("SuccessListener triggered");
+        });
+    });
+
+// TEST 2
+    document.getElementById("test2").addEventListener("click", function() {
+        var future = asynchronousProcessError(); // The asynchronous process will return a Future object
+        future.addErrorListener(function(future, error) {
+            alert("ErrorListener triggered: "+error.message);
+        });
+    });
+
+// TEST 3
+    document.getElementById("test3").addEventListener("click", function() {
+        var future = asynchronousProcessCancel(); // The asynchronous process will return a Future object
+        future.addCancelListener(function(future) {
+            alert("CancelListener triggered");
+        });
+    });
+
+// TEST 4
+    document.getElementById("test4").addEventListener("click", function() {
+        var future = asynchronousProcessSuccess(); // The asynchronous process will return a Future object
+        future.addSuccessListener(function(future) {
+            alert("SuccessListener triggered");
+        });
+        future.addErrorListener(function(future, error) {
+            alert("ErrorListener triggered: "+error.message);
+        });
+        future.addCancelListener(function(future) {
+            alert("CancelListener triggered");
+        });
+        future.addListener(function(future) {
+            alert("CompleteListener triggered");
+        });
+    });
+
+// TEST 5
+    document.getElementById("test5").addEventListener("click", function() {
+        var future = asynchronousProcessSuccess();
+        future.addSuccessListener(function(future) {
+            alert("SuccessListener #1 triggered");
+        });
+        future.addSuccessListener(function(future) {
+            alert("SuccessListener #2 triggered");
+        });
+        future.addListener(function(future) {
+            alert("CompleteListener #1 triggered");
+        });
+        future.addListener(function(future) {
+            alert("CompleteListener #2 triggered");
+        })
+    });
+
+// Asynchronous processes simulators -----------------------------------------
+    asynchronousProcessSuccess = function() {
+        var future = new Future();
+        future.enableDebug();
+        setTimeout(function() {
+            future.success();
+        }, 1000); // Asynchronous simulation
+        return future;
+    };
+    asynchronousProcessError = function() {
+        var future = new Future();
+        future.enableDebug();
+        setTimeout(function() {
+            future.error(new Error("Something went wrong!"));
+        }, 1000); // Asynchronous simulation
+        return future;
+    };
+    asynchronousProcessCancel = function() {
+        var future = new Future();
+        future.enableDebug();
+        setTimeout(function() {
+            future.cancel();
+        }, 1000); // Asynchronous simulation
+        return future;
+    };
+</script>
+
+</body>
+</html>
