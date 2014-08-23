@@ -4,7 +4,8 @@ FutureJS
 An easy to use JavaScript library for returning futures/promises without any dependencies and with full browser support.
 It also supports future grouping providing automatic wait-for-completion and evaluation of all grouped Futures. There are
 a lot of libraries out there as well, like jQuery's promises, also, native promises support is on it's way. I started
-this library long time ago by taking a whole different approach to the same problem which I still prefer and find easier.
+this library a long time ago by taking a whole different approach to the same problem and still find it simple, powerful
+ and useful enough.
 
 FutureGroups will resolve to:
 - *success*: if every future is success.
@@ -36,28 +37,28 @@ Future EventListeners Sample
 <script>
 document.getElementById("test1").addEventListener("click", function() {
     var future = myAsyncFunction(); // It will return a Future object that will trigger the listeners when completed
-    future.addSuccessListener(function(future, payload) {
+    future.onSuccess(function(future, payload) {
         alert("SuccessListener triggered: "+payload);
     });
-    future.addErrorListener(function(future, error) {
+    future.onError(function(future, error) {
         alert("ErrorListener triggered: "+error.message);
     });
-    future.addCancelListener(function(future) {
+    future.onCancel(function(future) {
         alert("CancelListener triggered");
     });
-    future.addListener(function(future) {
+    future.onComplete(function(future) {
         alert("CompleteListener triggered (on any result)");
     });
 });
 // You can use it also as a fluent interface
 document.getElementById("test2").addEventListener("click", function() {
-    myAsyncFunction().addSuccessListener(function(future, payload) {
+    myAsyncFunction().onSuccess(function(future, payload) {
         alert("SuccessListener triggered: "+payload);
-    }).addErrorListener(function(future, error) {
+    }).onError(function(future, error) {
         alert("ErrorListener triggered: "+error.message);
-    }).addCancelListener(function(future) {
+    }).onCancel(function(future) {
         alert("CancelListener triggered");
-    }).addListener(function(future) {
+    }).onComplete(function(future) {
         alert("CompleteListener triggered (on any result)");
     });
 });
@@ -89,17 +90,17 @@ FutureGroup EventListeners Sample
 <script>
 document.getElementById("test1").addEventListener("click", function() {
     var futureGroup = myComplexAsyncFunction(); // It will return a FutureGroup object that will trigger the listeners when completed
-    futureGroup.addSuccessListener(function(futureGroup) {
+    futureGroup.onSuccess(function(futureGroup) {
         alert("SuccessListener triggered");
     });
-    futureGroup.addErrorListener(function(futureGroup, lastError, errorsList) {
+    futureGroup.onError(function(futureGroup, lastError, errorsList) {
         alert("ErrorListener triggered: "+lastError.message);
         // errorList contains a Error[]
     });
-    futureGroup.addCancelListener(function(futureGroup) {
+    futureGroup.onCancel(function(futureGroup) {
         alert("CancelListener triggered");
     });
-    futureGroup.addListener(function(futureGroup) {
+    futureGroup.onComplete(function(futureGroup) {
         alert("CompleteListener triggered");
     });
 });

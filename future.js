@@ -49,7 +49,7 @@ function Future() {
     /**
      * Register a function to be run on complete
      */
-    this.addListener = function(callback) {
+    this.onComplete = function(callback) {
         this.log("Listener added");
         if (typeof callback == "function") completeListeners.push(callback);
         if (this.isSuccess()) this.success(); // Already completed as success, do it right now
@@ -60,7 +60,7 @@ function Future() {
     /**
      * Register a function to be run on success
      */
-    this.addSuccessListener = function(callback) {
+    this.onSuccess = function(callback) {
         this.log("Success listener added");
         if (typeof callback == "function") successListeners.push(callback);
         if (this.isSuccess()) this.success(); // Already completed as success, do it right now
@@ -70,7 +70,7 @@ function Future() {
      * Register a function to be run on error
      * Error listeners receive a second parameter with the Error object
      */
-    this.addErrorListener = function(callback) {
+    this.onError = function(callback) {
         this.log("Error listener added");
         if (typeof callback == "function") errorListeners.push(callback);
         if (this.isError()) this.error(); // Already completed as success, do it right now
@@ -79,7 +79,7 @@ function Future() {
     /**
      * Register a function to be run on cancel
      */
-    this.addCancelListener = function(callback) {
+    this.onCancel = function(callback) {
         this.log("Cancel listener added");
         if (typeof callback == "function") cancelListeners.push(callback);
         if (this.isCancel()) this.cancel(); // Already completed as cancel, do it right now
@@ -155,8 +155,8 @@ function Future() {
     this.flush = function() {
         var voidClosure = function() {};
         delete completed, completedSuccess, completedError, completedErrorException, completedCancel, completeListeners, successListeners, errorListeners, cancelListeners, id, data;
-        this.success = voidClosure; this.error = voidClosure; this.cancel = voidClosure; this.addListener = voidClosure; this.addSuccessListener = voidClosure;
-        this.addCancelListener = voidClosure; this.addErrorListener = voidClosure; this.setData = voidClosure; this.getData = voidClosure;
+        this.success = voidClosure; this.error = voidClosure; this.cancel = voidClosure; this.onComplete = voidClosure; this.onSuccess = voidClosure;
+        this.onCancel = voidClosure; this.onError = voidClosure; this.setData = voidClosure; this.getData = voidClosure;
     };
 };
 
@@ -317,7 +317,7 @@ function FutureGroup() {
     /**
      * Register a function to be run on complete
      */
-    this.addListener = function(callback) {
+    this.onComplete = function(callback) {
         this.log("Listener added");
         if (typeof callback === "function") {
             completeListeners.push(callback);
@@ -328,7 +328,7 @@ function FutureGroup() {
     /**
      * Register a function to be run on success
      */
-    this.addSuccessListener = function(callback) {
+    this.onSuccess = function(callback) {
         this.log("Success listener added");
         if (typeof callback === "function") {
             successListeners.push(callback);
@@ -342,7 +342,7 @@ function FutureGroup() {
      * Register a function to be run on error
      * Error listeners receive a second parameter with the Error object
      */
-    this.addErrorListener = function(callback) {
+    this.onError = function(callback) {
         this.log("Error listener added");
         if (typeof callback === "function") {
             errorListeners.push(callback);
@@ -355,7 +355,7 @@ function FutureGroup() {
     /**
      * Register a function to be run on cancel
      */
-    this.addCancelListener = function(callback) {
+    this.onCancel = function(callback) {
         this.log("Cancel listener added");
         if (typeof callback === "function") {
             cancelListeners.push(callback);

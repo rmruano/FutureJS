@@ -23,7 +23,7 @@
 // TEST 1
     document.getElementById("test1").addEventListener("click", function() {
         var future = asynchronousProcessSuccess(); // The asynchronous process will return a Future object
-        future.addSuccessListener(function(future, payload) {
+        future.onSuccess(function(future, payload) {
             alert("SuccessListener triggered. Payload: "+payload);
         });
     });
@@ -31,7 +31,7 @@
 // TEST 2
     document.getElementById("test2").addEventListener("click", function() {
         var future = asynchronousProcessError(); // The asynchronous process will return a Future object
-        future.addErrorListener(function(future, error) {
+        future.onError(function(future, error) {
             alert("ErrorListener triggered: "+error.message);
         });
     });
@@ -39,7 +39,7 @@
 // TEST 3
     document.getElementById("test3").addEventListener("click", function() {
         var future = asynchronousProcessCancel(); // The asynchronous process will return a Future object
-        future.addCancelListener(function(future) {
+        future.onCancel(function(future) {
             alert("CancelListener triggered");
         });
     });
@@ -47,16 +47,16 @@
 // TEST 4
     document.getElementById("test4").addEventListener("click", function() {
         var future = asynchronousProcessSuccess(); // The asynchronous process will return a Future object
-        future.addSuccessListener(function(future, payload) {
+        future.onSuccess(function(future, payload) {
             alert("SuccessListener triggered");
         });
-        future.addErrorListener(function(future, error) {
+        future.onError(function(future, error) {
             alert("ErrorListener triggered: "+error.message);
         });
-        future.addCancelListener(function(future) {
+        future.onCancel(function(future) {
             alert("CancelListener triggered");
         });
-        future.addListener(function(future) {
+        future.onComplete(function(future) {
             alert("CompleteListener triggered");
         });
     });
@@ -64,16 +64,16 @@
 // TEST 5
     document.getElementById("test5").addEventListener("click", function() {
         var future = asynchronousProcessSuccess();
-        future.addSuccessListener(function(future, payload) {
+        future.onSuccess(function(future, payload) {
             alert("SuccessListener #1 triggered");
         });
-        future.addSuccessListener(function(future, payload) {
+        future.onSuccess(function(future, payload) {
             alert("SuccessListener #2 triggered");
         });
-        future.addListener(function(future) {
+        future.onComplete(function(future) {
             alert("CompleteListener #1 triggered");
         });
-        future.addListener(function(future) {
+        future.onComplete(function(future) {
             alert("CompleteListener #2 triggered");
         })
     });
