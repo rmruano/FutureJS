@@ -23,8 +23,8 @@
 // TEST 1
     document.getElementById("test1").addEventListener("click", function() {
         var future = asynchronousProcessSuccess(); // The asynchronous process will return a Future object
-        future.addSuccessListener(function(future) {
-            alert("SuccessListener triggered");
+        future.addSuccessListener(function(future, payload) {
+            alert("SuccessListener triggered. Payload: "+payload);
         });
     });
 
@@ -47,7 +47,7 @@
 // TEST 4
     document.getElementById("test4").addEventListener("click", function() {
         var future = asynchronousProcessSuccess(); // The asynchronous process will return a Future object
-        future.addSuccessListener(function(future) {
+        future.addSuccessListener(function(future, payload) {
             alert("SuccessListener triggered");
         });
         future.addErrorListener(function(future, error) {
@@ -64,10 +64,10 @@
 // TEST 5
     document.getElementById("test5").addEventListener("click", function() {
         var future = asynchronousProcessSuccess();
-        future.addSuccessListener(function(future) {
+        future.addSuccessListener(function(future, payload) {
             alert("SuccessListener #1 triggered");
         });
-        future.addSuccessListener(function(future) {
+        future.addSuccessListener(function(future, payload) {
             alert("SuccessListener #2 triggered");
         });
         future.addListener(function(future) {
@@ -83,7 +83,7 @@
         var future = new Future();
         future.enableDebug();
         setTimeout(function() {
-            future.success();
+            future.success("My payload");
         }, 1000); // Asynchronous simulation
         return future;
     };

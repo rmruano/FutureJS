@@ -87,7 +87,7 @@
         // To keep it simple and avoid more global functions the future group is created here
         var futureGroup = new FutureGroup()
                 .enableDebug()
-                .add(asynchronousProcessSuccess())
+                .add(asynchronousProcessSuccess().addSuccessListener(function(future,payload){alert("Process asynchronousProcessSuccess() completed successfully");}) /* We can add listeners to the futures as well! */)
                 .add(asynchronousProcessError())
                 .add(function() {return false;} /* No error msg */)
                 .add(function() {throw new Error("Closure launched exception!")} /* Custom error */);

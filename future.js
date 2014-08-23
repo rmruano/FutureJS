@@ -14,6 +14,7 @@ function Future() {
     completedSuccess = false;
     completedError = false;
     completedErrorException = null;
+    completedPayload = null;
     completedCancel = false;
     completeListeners = [];
     successListeners = [];
@@ -87,13 +88,21 @@ function Future() {
     /**
      * Triggers the success event
      */
-    this.success = function() {
+    this.success = function(payload) {
         var listener;
+        if (typeof payload === "undefined") {
+            if (completedPayload!==null) {
+                payload = completedPayload;
+            } else {
+                payload = null;
+            }
+        }
         if (!(this.isCompleted())) { completed = true; completedSuccess = true; }
         if (this.isSuccess()) {
             this.log("Success triggered");
-            while(typeof (listener = successListeners.shift()) != "undefined") listener(this); // Dispatch every remaining success listener
-            while(typeof (listener = completeListeners.shift()) != "undefined") listener(this); // Dispatch every remaining complete listener
+            completedPayload = payload;
+            while(typeof (listener = successListeners.shift()) != "undefined") listener(this, payload); // Dispatch every remaining success listener
+            while(typeof (listener = completeListeners.shift()) != "undefined") listener(this, payload); // Dispatch every remaining complete listener
             if (group) group.futureCompleted();
         }
         else throw new Error("Cannot set Future to success state, already resolved to another completion status");
@@ -110,6 +119,9 @@ function Future() {
             while(typeof (listener = completeListeners.shift()) != "undefined") listener(this); // Dispatch every remaining complete listener
             if (group) group.futureCompleted();
         } else throw new Error("Future not cancellable, already resolved to another completion status");
+    };
+    this.getPayload = function() {
+        return completedPayload;
     };
     /**
      * Returns the last error exception (if any)

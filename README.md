@@ -1,8 +1,10 @@
 FutureJS
 ========
 
-An easy to use JavaScript library for returning futures/promises without any dependencies. Also supports future grouping
-providing automatic wait-for-completion and evaluation of all grouped Futures.
+An easy to use JavaScript library for returning futures/promises without any dependencies and with full browser support.
+It also supports future grouping providing automatic wait-for-completion and evaluation of all grouped Futures. There are
+a lot of libraries out there as well, like jQuery's promises, also, native promises support is on it's way. I started
+this library long time ago by taking a whole different approach to the same problem which I still prefer and find easier.
 
 FutureGroups will resolve to:
 - *success*: if every future is success.
@@ -18,7 +20,7 @@ Instead of accepting callbacks, your async function just return a Future object 
 function myAsyncFunction() {
     var future = new Future();
     future.enableDebug(); // This will send debug messages to the dev console
-    setTimeout(function() {future.success();}, 1000); // Asynchronous success simulation
+    setTimeout(function() {future.success("My payload");}, 1000); // Asynchronous success simulation
     // setTimeout(function() {future.cancel();}, 1000); // Asynchronous cancel simulation
     // setTimeout(function() {future.error(new Error("Something went wrong!");}, 1000); // Asynchronous error simulation
     return future;
@@ -29,12 +31,13 @@ Future EventListeners Sample
 ----------------------------
 ```
 <script src="future.js"></script>
-<input type="button" id="test1" value="TEST"/>
+<input type="button" id="test1" value="TEST 1"/>
+<input type="button" id="test2" value="TEST 2"/>
 <script>
 document.getElementById("test1").addEventListener("click", function() {
     var future = myAsyncFunction(); // It will return a Future object that will trigger the listeners when completed
-    future.addSuccessListener(function(future) {
-        alert("SuccessListener triggered");
+    future.addSuccessListener(function(future, payload) {
+        alert("SuccessListener triggered: "+payload);
     });
     future.addErrorListener(function(future, error) {
         alert("ErrorListener triggered: "+error.message);
@@ -43,6 +46,18 @@ document.getElementById("test1").addEventListener("click", function() {
         alert("CancelListener triggered");
     });
     future.addListener(function(future) {
+        alert("CompleteListener triggered (on any result)");
+    });
+});
+// You can use it also as a fluent interface
+document.getElementById("test2").addEventListener("click", function() {
+    myAsyncFunction().addSuccessListener(function(future, payload) {
+        alert("SuccessListener triggered: "+payload);
+    }).addErrorListener(function(future, error) {
+        alert("ErrorListener triggered: "+error.message);
+    }).addCancelListener(function(future) {
+        alert("CancelListener triggered");
+    }).addListener(function(future) {
         alert("CompleteListener triggered (on any result)");
     });
 });
