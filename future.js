@@ -7,8 +7,6 @@
  * Not meant to be extended. No dependencies used
  */
 
-var Future, FutureGroup;
-
 function Future() {
     var debug, completed, completedSuccess, completedError, completedErrorException, completedCancel, completeListeners, successListeners, errorListeners, cancelListeners, id, data, group;
     debug = false;
