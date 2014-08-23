@@ -9,7 +9,7 @@ FutureGroups will resolve to:
 - *error*: if any future is an error.
 - *cancel*: if any future is a cancel and there are no errors.
 
-Take a look at ```demo_future.html``` & ```demo_futuregroup.html``` for all working examples and advanced usage.
+Take a look at ```demo_future.html``` & ```demo_futuregroup.html``` for all working examples and advanced usage. Do not forget to open the dev tools to see the output ;)
 
 Returning a Future
 ------------------
@@ -17,7 +17,7 @@ Instead of accepting callbacks, your async function just return a Future object 
 ```
 function myAsyncFunction() {
     var future = new Future();
-    future.enableDebug();
+    future.enableDebug(); // This will send debug messages to the dev console
     setTimeout(function() {future.success();}, 1000); // Asynchronous success simulation
     // setTimeout(function() {future.cancel();}, 1000); // Asynchronous cancel simulation
     // setTimeout(function() {future.error(new Error("Something went wrong!");}, 1000); // Asynchronous error simulation
@@ -57,7 +57,7 @@ will also resolve automatically the result that must be triggered. You can also 
 ```
 function myComplexAsyncFunction() {
     var futureGroup = new FutureGroup()
-        .enableDebug()
+        .enableDebug() // This will send debug messages to the dev console
         .add(myAsyncFunction1())
         .add(myAsyncFunction2())
         .add(myAsyncFunction3())
