@@ -14,6 +14,11 @@ FutureGroups will resolve to:
 
 Take a look at ```demo_future.html``` & ```demo_futuregroup.html``` for all working examples and advanced usage. Do not forget to open the dev tools to see the output ;)
 
+Interactive demos
+-----------------
+https://rawgit.com/rmruano/FutureJS/master/demo_futuregroup.html
+https://rawgit.com/rmruano/FutureJS/master/demo_future.html
+
 Returning a Future
 ------------------
 Instead of accepting callbacks, your async function just return a Future object and triggers the result when completed.
