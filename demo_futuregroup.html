@@ -89,7 +89,7 @@
                 .enableDebug()
                 .add(asynchronousProcessSuccess().onSuccess(function(future,payload){
                     /* We can add listeners to the futures as well with the fluent interface */
-                    alert("Process asynchronousProcessSuccess() completed successfully: "+payload);
+                    alert("Process asynchronousProcessSuccess( completed successfully: "+payload);
                 }))
                 .add(asynchronousProcessError())
                 .add(function() {return false;} /* No error msg */)

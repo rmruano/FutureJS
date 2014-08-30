@@ -1,3 +1,5 @@
+/* jshint nonew:true, curly:true, unused:vars, noarg:true, forin:true, noempty:true, eqeqeq:true, strict:true, undef:true, bitwise:true, browser:true */
+
 /**
  * @author https://github.com/rmruano
  * @license https://github.com/rmruano/futurejs/blob/master/LICENSE
@@ -8,7 +10,8 @@
  */
 
 function Future() {
-    var debug, completed, completedSuccess, completedError, completedErrorException, completedCancel, completeListeners, successListeners, errorListeners, cancelListeners, id, data, group;
+    "use strict";
+    var debug, completed, completedSuccess, completedError, completedErrorException, completedCancel, completeListeners, successListeners, errorListeners, cancelListeners, id, data, group, completedPayload;
     debug = false;
     completed = false;
     completedSuccess = false;
@@ -30,9 +33,9 @@ function Future() {
         return (typeof data[id] !== "undefined" ? data[id] : null);
     };
     this.log = function(msg) {
-        if (debug && typeof console === "object") {
-            if (typeof msg === "string") console.log("Future "+this.getId()+" ("+new Date().toISOString()+"): "+msg);
-            else if (typeof msg === "object") console.dir(msg);
+        if (debug && typeof window.console === "object") {
+            if (typeof msg === "string")  {window.console.log("Future "+this.getId()+" ("+new Date().toISOString()+"): "+msg);}
+            else if (typeof msg === "object")  {window.console.dir(msg);}
         }
     };
     this.enableDebug = function() {debug=true;return this;};
@@ -43,7 +46,7 @@ function Future() {
     this.isError = function() {return (completed && completedError);};
     this.getId = function() {return id;};
     this.setFutureGroup = function (futureGroup) {
-        if (typeof futureGroup === "undefined" || !(futureGroup instanceof FutureGroup)) throw new Error("Not a FutureGroup instance");
+        if (typeof futureGroup === "undefined" || !(futureGroup instanceof FutureGroup)) {throw new Error("Not a FutureGroup instance");}
         group=futureGroup;
     };
     /**
@@ -51,10 +54,10 @@ function Future() {
      */
     this.onComplete = function(callback) {
         this.log("Listener added");
-        if (typeof callback == "function") completeListeners.push(callback);
-        if (this.isSuccess()) this.success(); // Already completed as success, do it right now
-        if (this.isError()) this.error(); // Already completed as error, do it right now
-        if (this.isCancel()) this.cancel(); // Already completed as cancel, do it right now
+        if (typeof callback === "function") {completeListeners.push(callback);}
+        if (this.isSuccess()) {this.success();} // Already completed as success, do it right now
+        if (this.isError()) {this.error();} // Already completed as error, do it right now
+        if (this.isCancel()) {this.cancel();} // Already completed as cancel, do it right now
         return this;
     };
     /**
@@ -62,8 +65,8 @@ function Future() {
      */
     this.onSuccess = function(callback) {
         this.log("Success listener added");
-        if (typeof callback == "function") successListeners.push(callback);
-        if (this.isSuccess()) this.success(); // Already completed as success, do it right now
+        if (typeof callback === "function") {successListeners.push(callback);}
+        if (this.isSuccess()) {this.success();} // Already completed as success, do it right now
         return this;
     };
     /**
@@ -72,8 +75,8 @@ function Future() {
      */
     this.onError = function(callback) {
         this.log("Error listener added");
-        if (typeof callback == "function") errorListeners.push(callback);
-        if (this.isError()) this.error(); // Already completed as success, do it right now
+        if (typeof callback === "function") {errorListeners.push(callback);}
+        if (this.isError()) {this.error();} // Already completed as success, do it right now
         return this;
     };
     /**
@@ -81,8 +84,8 @@ function Future() {
      */
     this.onCancel = function(callback) {
         this.log("Cancel listener added");
-        if (typeof callback == "function") cancelListeners.push(callback);
-        if (this.isCancel()) this.cancel(); // Already completed as cancel, do it right now
+        if (typeof callback === "function") {cancelListeners.push(callback);}
+        if (this.isCancel()) {this.cancel();} // Already completed as cancel, do it right now
         return this;
     };
     /**
@@ -101,11 +104,11 @@ function Future() {
         if (this.isSuccess()) {
             this.log("Success triggered");
             completedPayload = payload;
-            while(typeof (listener = successListeners.shift()) != "undefined") listener(this, payload); // Dispatch every remaining success listener
-            while(typeof (listener = completeListeners.shift()) != "undefined") listener(this, payload); // Dispatch every remaining complete listener
-            if (group) group.futureCompleted();
+            while(typeof (listener = successListeners.shift()) !== "undefined") {listener(this, payload);} // Dispatch every remaining success listener
+            while(typeof (listener = completeListeners.shift()) !== "undefined") {listener(this, payload);} // Dispatch every remaining complete listener
+            if (group) {group.futureCompleted();}
         }
-        else throw new Error("Cannot set Future to success state, already resolved to another completion status");
+        else {throw new Error("Cannot set Future to success state, already resolved to another completion status");}
     };
     /**
      * Triggers the cancel event
@@ -115,10 +118,10 @@ function Future() {
         if (!(this.isCompleted())) { completed = true; completedCancel = true; }
         if (this.isCancel()) {
             this.log("Cancel triggered");
-            while(typeof (listener = cancelListeners.shift()) != "undefined") listener(this); // Dispatch every remaining cancel listener
-            while(typeof (listener = completeListeners.shift()) != "undefined") listener(this); // Dispatch every remaining complete listener
-            if (group) group.futureCompleted();
-        } else throw new Error("Future not cancellable, already resolved to another completion status");
+            while(typeof (listener = cancelListeners.shift()) !== "undefined") {listener(this);} // Dispatch every remaining cancel listener
+            while(typeof (listener = completeListeners.shift()) !== "undefined") {listener(this);} // Dispatch every remaining complete listener
+            if (group) {group.futureCompleted();}
+        } else {throw new Error("Future not cancellable, already resolved to another completion status");}
     };
     this.getPayload = function() {
         return completedPayload;
@@ -136,31 +139,31 @@ function Future() {
         var listener;
         if (!(this.isCompleted())) { completed = true; completedError = true; }
         if (this.isError()) {
-            if ((typeof error=="undefined" || !(error instanceof Error))) {
-                if (typeof error == "string") error = new Error(error);
-                else if (completedErrorException instanceof Error) error = completedErrorException; // Already set previously
-                else error = new Error("Future's error state triggered, no error detail provided");
+            if ((error===undefined || !(error instanceof Error))) {
+                if (typeof error === "string") {error = new Error(error);}
+                else if (completedErrorException instanceof Error) {error = completedErrorException;} // Already set previously
+                else {error = new Error("Future's error state triggered, no error detail provided");}
             }
             completedErrorException = error; // Save it for later
             this.log("Error triggered");
             this.log(error);
-            while(typeof (listener = errorListeners.shift()) != "undefined") listener(this, error); // Dispatch every remaining error listener, the Error object is provided as a second parameter
-            while(typeof (listener = completeListeners.shift()) != "undefined") listener(this); // Dispatch every remaining complete listener
-            if (group) group.futureCompleted();
-        } else throw new Error("Cannot set Future to error state, already resolved to another completion status");
+            while(typeof (listener = errorListeners.shift()) !== "undefined") {listener(this, error);} // Dispatch every remaining error listener, the Error object is provided as a second parameter
+            while(typeof (listener = completeListeners.shift()) !== "undefined") {listener(this);} // Dispatch every remaining complete listener
+            if (group) {group.futureCompleted();}
+        } else {throw new Error("Cannot set Future to error state, already resolved to another completion status");}
     };
     /**
      * Flushes everything and waits for the garbage collector to kill us, after using this the Future is no longer usable
      */
     this.flush = function() {
         var voidClosure = function() {};
-        delete completed, completedSuccess, completedError, completedErrorException, completedCancel, completeListeners, successListeners, errorListeners, cancelListeners, id, data;
         this.success = voidClosure; this.error = voidClosure; this.cancel = voidClosure; this.onComplete = voidClosure; this.onSuccess = voidClosure;
         this.onCancel = voidClosure; this.onError = voidClosure; this.setData = voidClosure; this.getData = voidClosure;
     };
-};
+}
 
 function FutureGroup() {
+    "use strict";
     var readyEventTimeout, readyDelay, id, cancelListeners, errorListeners, successListeners, completeListeners, ready, futures, debug, futureGroup, triggerSuccess, triggerCancel, triggerError;
     debug = false;
     futureGroup = this;
@@ -177,15 +180,14 @@ function FutureGroup() {
      * Once the FutureGroup is in "ready" status, no more futures can be added to it.
      */
     readyDelay = 250;
-    readyEventTimeout = null;
     this.getId = function() {return id;};
     this.log = function(msg) {
-        if (debug && typeof console == "object") {
-            if (typeof msg == "string") console.log("FutureGroup "+this.getId()+" ("+new Date().toISOString()+"): "+msg);
-            else if (typeof msg == "object") console.dir(msg);
+        if (debug && typeof window.console === "object") {
+            if (typeof msg === "string") {window.console.log("FutureGroup "+this.getId()+" ("+new Date().toISOString()+"): "+msg);}
+            else if (typeof msg === "object") {window.console.dir(msg);}
         }
     };
-    this.disableAutoReady = function() {readyDelay=0;return this;}
+    this.disableAutoReady = function() {readyDelay=0;return this;};
     this.enableDebug = function() {debug=true;return this;};
     this.newFuture = function() {
         var future = new Future();
@@ -391,8 +393,8 @@ function FutureGroup() {
         }
     };
     this.flush = function() {
-        if (futures.length===0) return false;
-        for (var i=0,j=futures.length;i<j;i++) futures[i].flush();
+        if (futures.length===0) {return false;}
+        for (var i=0,j=futures.length;i<j;i++) {futures[i].flush();}
     };
     /**
      * Triggers the success event
@@ -401,8 +403,8 @@ function FutureGroup() {
         var listener;
         if (futureGroup.isSuccess()) {
             futureGroup.log("Success triggered");
-            while(typeof (listener = successListeners.shift()) != "undefined") listener(futureGroup); // Dispatch every remaining success listener
-            while(typeof (listener = completeListeners.shift()) != "undefined") listener(futureGroup); // Dispatch every remaining complete listener
+            while(typeof (listener = successListeners.shift()) !== "undefined") {listener(futureGroup);} // Dispatch every remaining success listener
+            while(typeof (listener = completeListeners.shift()) !== "undefined") {listener(futureGroup);} // Dispatch every remaining complete listener
         }
     };
     /**
@@ -412,21 +414,21 @@ function FutureGroup() {
         var listener;
         if (!futureGroup.isError() && futureGroup.isCancel()) {
             futureGroup.log("Cancel triggered");
-            while(typeof (listener = cancelListeners.shift()) != "undefined") listener(futureGroup); // Dispatch every remaining cancel listener
-            while(typeof (listener = completeListeners.shift()) != "undefined") listener(futureGroup); // Dispatch every remaining complete listener
+            while(typeof (listener = cancelListeners.shift()) !== "undefined") {listener(futureGroup);} // Dispatch every remaining cancel listener
+            while(typeof (listener = completeListeners.shift()) !== "undefined") {listener(futureGroup);} // Dispatch every remaining complete listener
         }
     };
     /**
      * Triggers the error event
      */
     triggerError = function() {
-        var listener, errors, lastError = null, i, j;
+        var listener, errors, lastError = null;
         if (futureGroup.isError()) {
             futureGroup.log("Error triggered");
             errors = futureGroup.getErrors();
-            if (errors.length>0) lastError = errors[errors.length-1];
-            while(typeof (listener = errorListeners.shift()) != "undefined") listener(futureGroup, lastError, futureGroup.getErrors()); // Dispatch every remaining error listener, an Array of Error objects is provided as a second parameter
-            while(typeof (listener = completeListeners.shift()) != "undefined") listener(futureGroup); // Dispatch every remaining complete listener
+            if (errors.length>0) {lastError = errors[errors.length-1];}
+            while(typeof (listener = errorListeners.shift()) !== "undefined") {listener(futureGroup, lastError, futureGroup.getErrors());} // Dispatch every remaining error listener, an Array of Error objects is provided as a second parameter
+            while(typeof (listener = completeListeners.shift()) !== "undefined") {listener(futureGroup);} // Dispatch every remaining complete listener
         }
     };
-};
+}
